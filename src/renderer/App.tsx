@@ -1,49 +1,47 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import icon from '../../assets/icon.svg';
 import './App.css';
+import { useState } from 'react';
+import { loginUser } from 'renderer';
 
-function Hello() {
+const Home = () => {
+  const [token, setToken] = useState('');
+  const [disable, setDisable] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [error, setError] = useState('');
+  // const [monitorMessage, setMonitorMessage] = useState('');
+
+  const handelLogin = async () => {
+    if (token && !disable) {
+      setDisable(true);
+      const res: any = await loginUser(token);
+      if (res?.login) {
+        setUserName(res?.username);
+      } else {
+        setError(res?.message);
+      }
+      setDisable(false);
+    }
+  };
+
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+    <div className="home">
+      <input
+        placeholder="Enter discord token"
+        value={token}
+        onChange={(e) => setToken(e.target.value)}
+      />
+      <button onClick={handelLogin}>Login User</button>
+      {userName && <div>Logged in as {userName}</div>}
     </div>
   );
-}
+};
 
 export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </Router>
   );

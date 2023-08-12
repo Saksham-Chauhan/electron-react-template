@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { loginUser } from './discord';
 
 class AppUpdater {
   constructor() {
@@ -135,3 +136,17 @@ app
     });
   })
   .catch(console.log);
+
+// -------CHANNELS---------
+ipcMain.on('login-user', async (event, arg: string) => {
+  try {
+    const res: any = await loginUser(arg);
+    console.log(res);
+    event.reply('login-user', res);
+  } catch (error: any) {
+    console.log(error);
+    event.reply('login-user', { login: false, message: error?.message });
+  }
+});
+
+export { mainWindow };

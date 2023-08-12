@@ -11,3 +11,12 @@ window.electron.ipcRenderer.once('ipc-example', (arg) => {
   console.log(arg);
 });
 window.electron.ipcRenderer.sendMessage('ipc-example', ['ping']);
+
+export const loginUser = (token: string) => {
+  window.electron.ipcRenderer.sendMessage('login-user', token);
+  return new Promise((resolve) => {
+    window.electron.ipcRenderer.once('login-user', (arg: any) => {
+      resolve(arg);
+    });
+  });
+};
